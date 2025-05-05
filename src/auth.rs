@@ -4,6 +4,8 @@ use cw_storage_plus::Item;
 
 use thiserror::Error;
 
+use crate::utils::convert_err;
+
 /// Stores the state of changing simple process
 const TRANSFER_ADMIN_STATE: Item<TransferAdminState> = Item::new("transfer_admin_state");
 
@@ -259,8 +261,8 @@ pub enum AuthError {
 }
 
 impl From<AuthError> for StdError {
-    fn from(asset_error: AuthError) -> Self {
-        Self::generic_err(asset_error.to_string())
+    fn from(error: AuthError) -> Self {
+        convert_err(error)
     }
 }
 

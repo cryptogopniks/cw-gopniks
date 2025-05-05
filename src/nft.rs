@@ -5,6 +5,8 @@ use cosmwasm_std::{
 
 use thiserror::Error;
 
+use crate::utils::convert_err;
+
 #[cw_serde]
 enum ExecuteMsg {
     /// Transfer is a base message to move a token to another account without triggering actions
@@ -307,7 +309,7 @@ pub enum NftError {
 }
 
 impl From<NftError> for StdError {
-    fn from(asset_error: NftError) -> Self {
-        Self::generic_err(asset_error.to_string())
+    fn from(error: NftError) -> Self {
+        convert_err(error)
     }
 }

@@ -6,6 +6,8 @@ use cosmwasm_std::{
 
 use thiserror::Error;
 
+use crate::utils::convert_err;
+
 #[cw_serde]
 pub enum Token {
     Native { denom: String },
@@ -86,16 +88,16 @@ impl TokenUnverified {
     }
 
     pub fn verify(&self, api: &dyn Api) -> StdResult<Token> {
-        match self {
-            Self::Cw20 { address } => Ok(Token::new_cw20(&api.addr_validate(address)?)),
-            Self::Native { denom } => Ok(Token::new_native(denom)),
-        }
+        Ok(match self {
+            Self::Cw20 { address } => Token::new_cw20(&api.addr_validate(address)?),
+            Self::Native { denom } => Token::new_native(denom),
+        })
     }
 
     pub fn get_symbol(&self) -> String {
-        match self.to_owned() {
-            Self::Native { denom } => denom,
-            Self::Cw20 { address } => address,
+        match self {
+            Self::Native { denom } => denom.to_owned(),
+            Self::Cw20 { address } => address.to_owned(),
         }
     }
 }
@@ -117,12 +119,6 @@ pub struct Currency<T: From<Token>> {
     pub decimals: u8,
 }
 
-impl Default for Currency<Token> {
-    fn default() -> Self {
-        Self::new(&Token::new_native(&String::default()), 0)
-    }
-}
-
 impl<T: From<Token> + Clone> Currency<T> {
     pub fn new(denom_or_address: &T, decimals: u8) -> Self {
         Self {
@@ -139,6 +135,7 @@ pub struct InfoResp {
     pub asset_token: Token,
 }
 
+// TODO: add more options
 #[cw_serde]
 pub enum Funds {
     Empty,
@@ -265,6 +262,9 @@ pub fn get_transfer_msg(recipient: &Addr, amount: Uint128, token: &Token) -> Std
     })
 }
 
+// TODO: we may not need entire cw20 crate for 2 msgs
+// TODO: add functions to query balances
+
 /// If exactly one coin was sent, returns it regardless of denom.
 /// Returns error if 0 or 2+ coins were sent
 fn one_coin(info: &MessageInfo) -> StdResult<Coin> {
@@ -312,8 +312,8 @@ pub enum AssetError {
 }
 
 impl From<AssetError> for StdError {
-    fn from(asset_error: AssetError) -> Self {
-        Self::generic_err(asset_error.to_string())
+    fn from(error: AssetError) -> Self {
+        convert_err(error)
     }
 }
 
