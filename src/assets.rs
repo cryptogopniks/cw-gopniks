@@ -3,6 +3,7 @@ use cosmwasm_std::{
     coin, coins, wasm_execute, Addr, Api, BankMsg, Coin, CosmosMsg, MessageInfo, StdError,
     StdResult, Uint128, WasmMsg,
 };
+
 use thiserror::Error;
 
 #[cw_serde]

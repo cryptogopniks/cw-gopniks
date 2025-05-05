@@ -4,6 +4,8 @@
   ],
   "rust-analyzer.cargo.features": [
     "assets",
-    "encryption"
+    "encryption",
+    "hashing",
+    "auth"
   ]
 }
