@@ -215,6 +215,12 @@ checksum = "89e25b6adfb930f02d1981565a6e5d9c547ac15a96606256d3b59040e5cd4ca3"
 
 [[package]]
 name = "bech32"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d86b93f97252c47b41663388e6d155714a9d0c398b99f1005cbc5f978b29f445"
+
+[[package]]
+name = "bech32"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d965446196e3b7decd44aa7ee49e31d630118f90ef12f97900f262eb915c951d"
@@ -343,7 +349,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bf82335c14bd94eeb4d3c461b7aa419ecd7ea13c2efe24b97cd972bdb8044e7d"
 dependencies = [
  "base64",
- "bech32",
+ "bech32 0.11.0",
  "bnum",
  "cosmwasm-core",
  "cosmwasm-crypto",
@@ -458,6 +464,7 @@ version = "1.0.0"
 dependencies = [
  "aes-gcm-siv",
  "argon2",
+ "bech32 0.9.1",
  "cosmwasm-schema",
  "cosmwasm-std",
  "cw-storage-plus",

@@ -1,8 +1,8 @@
 use argon2::{Algorithm, Argon2, ParamsBuilder, Version};
 use cosmwasm_std::StdResult;
 
-use crate::private_communication::convert_err;
 pub use crate::private_communication::{Hash, ENC_KEY_LEN};
+use crate::utils::convert_err;
 
 /// Accepts `password` as string of letters and numbers and `salt` as string of letters and numbers
 pub fn calc_hash_bytes(password: &str, salt: &str) -> StdResult<[u8; ENC_KEY_LEN]> {

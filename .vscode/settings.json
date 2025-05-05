@@ -6,6 +6,8 @@
     "assets",
     "encryption",
     "hashing",
-    "auth"
+    "auth",
+    "bech32",
+    "nft"
   ]
 }
