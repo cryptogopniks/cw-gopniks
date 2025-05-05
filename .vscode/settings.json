@@ -1,0 +1,9 @@
+{
+  "rust-analyzer.diagnostics.disabled": [
+    "unlinked-file"
+  ],
+  "rust-analyzer.cargo.features": [
+    "assets",
+    "encryption"
+  ]
+}

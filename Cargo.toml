@@ -1,0 +1,40 @@
+[package]
+name = "cw-gopniks"
+version = "1.0.0"
+edition = "2021"
+repository = "https://github.com/cryptogopniks/cw-gopniks"
+authors = ["M. Daeva <embedmad@gmail.com>"]
+description = "CosmWasm codebase used across (and beyond) CryptoGopniks projects"
+license = "Apache-2.0"
+documentation = "https://docs.rs/cw-gopniks"
+readme = "README.md"
+keywords = ["cosmwasm", "blockchain", "cosmos"]
+categories = ["cryptography::cryptocurrencies"]
+
+[features]
+encryption = ["dep:serde", "dep:aes-gcm-siv"]
+# hashing
+assets = ["dep:cw20"]
+# auth
+# bech32
+# cw721
+
+# default = ["bech32"]
+# full = ["bech32", "auth"]
+
+
+[dependencies]
+# required
+cosmwasm-schema = "2.2.0"
+cosmwasm-std = "2.2.0"
+thiserror = "2.0.12"
+# optional
+#
+# default feature "getrandom" must be disabled to avoid error during static wasm validation
+aes-gcm-siv = { version = "0.11.1", optional = true, default-features = false, features = [
+  "aes",
+  "alloc",
+] }
+cw20 = { version = "2.0.0", optional = true }
+# cw-private-communication = { version = "1.0.0", optional = true }
+serde = { version = "1.0.163", optional = true }
