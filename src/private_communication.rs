@@ -78,7 +78,3 @@ fn hash_bytes_to_norm_dec(hash: &[u8; ENC_KEY_LEN]) -> Decimal {
 
     Decimal::from_ratio(hash_value, u128::MAX)
 }
-
-pub fn convert_err(e: impl ToString) -> StdError {
-    StdError::generic_err(e.to_string())
-}

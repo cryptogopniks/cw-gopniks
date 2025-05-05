@@ -12,16 +12,14 @@ keywords = ["cosmwasm", "blockchain", "cosmos"]
 categories = ["cryptography::cryptocurrencies"]
 
 [features]
-encryption = ["dep:serde", "dep:aes-gcm-siv"]
-# hashing
 assets = ["dep:cw20"]
-# auth
-# bech32
-# cw721
-
-# default = ["bech32"]
-# full = ["bech32", "auth"]
-
+auth = ["dep:cw-storage-plus"]
+bech32 = ["dep:bech32"]
+nft = []
+encryption = ["dep:serde", "dep:aes-gcm-siv"]
+hashing = ["dep:argon2"]
+default = ["assets", "auth"]
+full = ["default", "bech32", "nft", "encryption", "hashing"]
 
 [dependencies]
 # required
@@ -35,6 +33,8 @@ aes-gcm-siv = { version = "0.11.1", optional = true, default-features = false, f
   "aes",
   "alloc",
 ] }
+argon2 = { version = "0.5.3", optional = true }
+bech32 = { version = "0.9.1", optional = true }
 cw20 = { version = "2.0.0", optional = true }
-# cw-private-communication = { version = "1.0.0", optional = true }
+cw-storage-plus = { version = "2.0.0", optional = true }
 serde = { version = "1.0.163", optional = true }

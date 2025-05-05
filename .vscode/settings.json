@@ -4,6 +4,10 @@
   ],
   "rust-analyzer.cargo.features": [
     "assets",
-    "encryption"
+    "encryption",
+    "hashing",
+    "auth",
+    "bech32",
+    "nft"
   ]
 }
