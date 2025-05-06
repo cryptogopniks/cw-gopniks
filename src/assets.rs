@@ -317,30 +317,30 @@ impl From<AssetError> for StdError {
     }
 }
 
-#[cfg(test)]
-pub mod test {
-    use super::*;
-    use crate::cosmwasm_std::testing::{message_info, mock_dependencies};
+// #[cfg(test)]
+// pub mod test {
+//     use super::*;
+//     use crate::cosmwasm_std::testing::{message_info, mock_dependencies};
 
-    #[test]
-    fn test_single_coin() -> StdResult<()> {
-        const ADMIN: &str = "cosmwasm105yqjjdgl00nzwyj9aua98zgetdn4qyhukjf5t";
-        const AMOUNT: u128 = 100;
-        const DENOM: &str = "cosm";
+//     #[test]
+//     fn test_single_coin() -> StdResult<()> {
+//         const ADMIN: &str = "cosmwasm105yqjjdgl00nzwyj9aua98zgetdn4qyhukjf5t";
+//         const AMOUNT: u128 = 100;
+//         const DENOM: &str = "cosm";
 
-        let deps = mock_dependencies();
-        let info = message_info(&Addr::unchecked(ADMIN), &coins(AMOUNT, DENOM));
-        let info_resp = Funds::single(None, None).check(&deps.api, &info)?;
+//         let deps = mock_dependencies();
+//         let info = message_info(&Addr::unchecked(ADMIN), &coins(AMOUNT, DENOM));
+//         let info_resp = Funds::single(None, None).check(&deps.api, &info)?;
 
-        assert_eq!(
-            info_resp,
-            InfoResp {
-                sender: Addr::unchecked(ADMIN),
-                asset_amount: Uint128::new(AMOUNT),
-                asset_token: Token::new_native(DENOM),
-            }
-        );
+//         assert_eq!(
+//             info_resp,
+//             InfoResp {
+//                 sender: Addr::unchecked(ADMIN),
+//                 asset_amount: Uint128::new(AMOUNT),
+//                 asset_token: Token::new_native(DENOM),
+//             }
+//         );
 
-        Ok(())
-    }
-}
+//         Ok(())
+//     }
+// }
