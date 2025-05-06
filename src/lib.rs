@@ -10,6 +10,11 @@ use cosmwasm_std_v1 as cosmwasm_std;
 use cosmwasm_std_v2 as cosmwasm_std;
 
 #[cfg(feature = "cw-v1")]
+use cw_storage_plus_v1 as cw_storage_plus;
+#[cfg(feature = "cw-v2")]
+use cw_storage_plus_v2 as cw_storage_plus;
+
+#[cfg(feature = "cw-v1")]
 use cw20_v1 as cw20;
 #[cfg(feature = "cw-v2")]
 use cw20_v2 as cw20;
@@ -21,13 +26,13 @@ mod private_communication;
 
 #[cfg(feature = "assets")]
 pub mod assets;
-// #[cfg(feature = "auth")]
-// pub mod auth;
-// #[cfg(feature = "bech32")]
-// pub mod bech32;
+#[cfg(feature = "auth")]
+pub mod auth;
+#[cfg(feature = "bech32")]
+pub mod bech32;
 #[cfg(feature = "encryption")]
 pub mod encryption;
 #[cfg(feature = "hashing")]
 pub mod hashing;
-// #[cfg(feature = "nft")]
-// pub mod nft;
+#[cfg(feature = "nft")]
+pub mod nft;

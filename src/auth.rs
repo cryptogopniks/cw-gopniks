@@ -1,5 +1,8 @@
-use crate::cosmwasm_std::{Addr, Api, CustomQuery, DepsMut, Env, StdError, StdResult};
+use crate::cosmwasm_std;
+use crate::cw_storage_plus;
+
 use cosmwasm_schema::cw_serde;
+use cosmwasm_std::{Addr, Api, CustomQuery, DepsMut, Env, StdError, StdResult};
 use cw_storage_plus::Item;
 
 use thiserror::Error;
