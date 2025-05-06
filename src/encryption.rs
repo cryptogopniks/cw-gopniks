@@ -1,4 +1,4 @@
-use cosmwasm_std::{from_base64, from_json, to_base64, to_json_vec, StdResult, Timestamp};
+use crate::cosmwasm_std::{from_base64, from_json, to_base64, to_json_vec, StdResult, Timestamp};
 use serde::{de::DeserializeOwned, Serialize};
 
 pub use crate::private_communication::{

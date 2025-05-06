@@ -1,4 +1,4 @@
-use crate::cw::cosmwasm_std::StdError;
+use crate::cosmwasm_std::StdError;
 
 /// Converts an error to a StdError with the error message
 pub fn convert_err(e: impl ToString) -> StdError {

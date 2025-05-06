@@ -1,5 +1,5 @@
+use crate::cosmwasm_std::StdResult;
 use argon2::{Algorithm, Argon2, ParamsBuilder, Version};
-use cosmwasm_std::StdResult;
 
 pub use crate::private_communication::{Hash, ENC_KEY_LEN};
 use crate::utils::convert_err;

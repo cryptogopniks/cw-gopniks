@@ -1,8 +1,8 @@
-use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{
+use crate::cosmwasm_std::{
     coin, coins, wasm_execute, Addr, Api, BankMsg, Coin, CosmosMsg, MessageInfo, StdError,
     StdResult, Uint128, WasmMsg,
 };
+use cosmwasm_schema::cw_serde;
 
 use thiserror::Error;
 
@@ -320,7 +320,7 @@ impl From<AssetError> for StdError {
 #[cfg(test)]
 pub mod test {
     use super::*;
-    use cosmwasm_std::testing::{message_info, mock_dependencies};
+    use crate::cosmwasm_std::testing::{message_info, mock_dependencies};
 
     #[test]
     fn test_single_coin() -> StdResult<()> {

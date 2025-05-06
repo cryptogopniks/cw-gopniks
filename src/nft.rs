@@ -1,7 +1,7 @@
-use cosmwasm_schema::{cw_serde, QueryResponses};
-use cosmwasm_std::{
+use crate::cosmwasm_std::{
     wasm_execute, Addr, CosmosMsg, Deps, QuerierWrapper, StdError, StdResult, Timestamp,
 };
+use cosmwasm_schema::{cw_serde, QueryResponses};
 
 use thiserror::Error;
 

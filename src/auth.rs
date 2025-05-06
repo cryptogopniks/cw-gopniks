@@ -1,5 +1,5 @@
+use crate::cosmwasm_std::{Addr, Api, CustomQuery, DepsMut, Env, StdError, StdResult};
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{Addr, Api, CustomQuery, DepsMut, Env, StdError, StdResult};
 use cw_storage_plus::Item;
 
 use thiserror::Error;
@@ -269,7 +269,7 @@ impl From<AuthError> for StdError {
 #[cfg(test)]
 pub mod tests {
     use super::{Addr, Auth, AuthError, StdResult, TransferAdminState, TRANSFER_ADMIN_STATE};
-    use cosmwasm_std::testing::{mock_dependencies, mock_env};
+    use crate::cosmwasm_std::testing::{mock_dependencies, mock_env};
 
     const ADMIN: &str = "cosmwasm105yqjjdgl00nzwyj9aua98zgetdn4qyhukjf5t";
     const WORKER: &str = "cosmwasm10datnnlcjmrdl37ka0g4u83chvxpfafm9t6nyr";

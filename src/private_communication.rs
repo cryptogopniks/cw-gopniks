@@ -1,5 +1,5 @@
+use crate::cosmwasm_std::{from_hex, to_hex, Decimal, Env, StdError, StdResult, Timestamp};
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{from_hex, to_hex, Decimal, Env, StdError, StdResult, Timestamp};
 
 pub const ENC_KEY_LEN: usize = 32;
 

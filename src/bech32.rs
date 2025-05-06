@@ -7,8 +7,8 @@
 //! - Convert between different bech32 prefix formats
 //! - Handle bech32 addresses in a type-safe manner
 
+use crate::cosmwasm_std::{Addr, StdError, StdResult};
 use bech32::{decode, encode, Variant};
-use cosmwasm_std::{Addr, StdError, StdResult};
 
 use crate::utils::convert_err;
 
