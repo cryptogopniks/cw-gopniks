@@ -9,6 +9,6 @@
     "auth",
     "bech32",
     "nft",
-    "cw-std-v1" // use only one of cw-std-v1, cw-std-v2 
+    "cw-v1" // use only one of cw-v1, cw-v2 
   ]
 }
