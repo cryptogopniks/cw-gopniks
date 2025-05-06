@@ -1,3 +1,5 @@
+use crate::cosmwasm_std;
+
 use argon2::{Algorithm, Argon2, ParamsBuilder, Version};
 use cosmwasm_std::StdResult;
 

@@ -1,15 +1,49 @@
-use cosmwasm_std::{from_base64, from_json, to_base64, to_json_vec, StdResult, Timestamp};
-use serde::{de::DeserializeOwned, Serialize};
+use crate::cosmwasm_std;
+
+use cosmwasm_schema::serde::{de::DeserializeOwned, Serialize};
+use cosmwasm_std::{from_json, to_json_vec, StdResult, Timestamp};
+
+#[cfg(feature = "cw-v2")]
+use crate::cosmwasm_std::{from_base64, to_base64};
+
+use aes_gcm_siv::{
+    aead::{generic_array::GenericArray, Aead, KeyInit},
+    Aes256GcmSiv, Nonce,
+};
 
 pub use crate::private_communication::{
     EncryptedResponse, ExecuteMsgWithTimestamp, Hash, ENC_KEY_LEN,
 };
 use crate::utils::convert_err;
 
-use aes_gcm_siv::{
-    aead::{generic_array::GenericArray, Aead, KeyInit},
-    Aes256GcmSiv, Nonce,
-};
+/// Base64 encoding engine used in conversion to/from base64.
+///
+/// The engine adds padding when encoding and accepts strings with or
+/// without padding when decoding.
+#[cfg(feature = "cw-v1")]
+const B64_ENGINE: base64::engine::GeneralPurpose = base64::engine::GeneralPurpose::new(
+    &base64::alphabet::STANDARD,
+    base64::engine::GeneralPurposeConfig::new()
+        .with_decode_padding_mode(base64::engine::DecodePaddingMode::Indifferent),
+);
+
+/// Deserialize a bag of bytes from Base64 into a vector of bytes
+#[cfg(feature = "cw-v1")]
+fn from_base64<I>(input: I) -> StdResult<Vec<u8>>
+where
+    I: AsRef<[u8]>,
+{
+    base64::Engine::decode(&B64_ENGINE, input).map_err(convert_err)
+}
+
+/// Encode a bag of bytes into the Base64 format
+#[cfg(feature = "cw-v1")]
+fn to_base64<I>(input: I) -> String
+where
+    I: AsRef<[u8]>,
+{
+    base64::Engine::encode(&B64_ENGINE, input)
+}
 
 fn timestamp_to_nonce(timestamp: &Timestamp) -> String {
     // Nonce length must be 12
