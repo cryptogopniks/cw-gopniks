@@ -18,13 +18,17 @@ bech32 = ["dep:bech32"]
 nft = []
 encryption = ["dep:serde", "dep:aes-gcm-siv"]
 hashing = ["dep:argon2"]
-default = ["assets", "auth"]
-full = ["default", "bech32", "nft", "encryption", "hashing"]
+# mutually exclusive CosmWasm std versions, only enable one of these at a time
+cw-std-v1 = ["dep:cosmwasm-std-v1"]
+cw-std-v2 = ["dep:cosmwasm-std-v2"]
 
 [dependencies]
 # required
+# cosmwasm-std = "2.2.0"
+cosmwasm-std-v1 = { package = "cosmwasm-std", version = "=1.5.4", optional = true }
+cosmwasm-std-v2 = { package = "cosmwasm-std", version = ">=2.2.0", optional = true }
+# cosmwasm-schema = "=1.5.11"
 cosmwasm-schema = "2.2.0"
-cosmwasm-std = "2.2.0"
 thiserror = "2.0.12"
 # optional
 #
@@ -36,5 +40,6 @@ aes-gcm-siv = { version = "0.11.1", optional = true, default-features = false, f
 argon2 = { version = "0.5.3", optional = true }
 bech32 = { version = "0.9.1", optional = true }
 cw20 = { version = "2.0.0", optional = true }
+# cosmwasm-storage = { version = "=1.2.0" }
 cw-storage-plus = { version = "2.0.0", optional = true }
 serde = { version = "1.0.163", optional = true }
