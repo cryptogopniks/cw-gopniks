@@ -2,13 +2,14 @@
   "rust-analyzer.diagnostics.disabled": [
     "unlinked-file"
   ],
+  // use only one of cw_v1, cw_v2 
   "rust-analyzer.cargo.features": [
-    "assets",
-    "encryption",
-    "hashing",
-    "auth",
+    "assets-v2",
+    "encryption-v2",
+    "hashing-v2",
+    "auth-v2",
     "bech32",
     "nft",
-    "cw-v2" // use only one of cw-v1, cw-v2 
+    "cw-v2"
   ]
 }
