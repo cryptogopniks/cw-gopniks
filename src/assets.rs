@@ -1,8 +1,11 @@
-use crate::cosmwasm_std::{
+use crate::cosmwasm_std;
+use crate::cw20;
+
+use cosmwasm_schema::cw_serde;
+use cosmwasm_std::{
     coin, coins, wasm_execute, Addr, Api, BankMsg, Coin, CosmosMsg, MessageInfo, StdError,
     StdResult, Uint128, WasmMsg,
 };
-use cosmwasm_schema::cw_serde;
 
 use thiserror::Error;
 
@@ -317,30 +320,34 @@ impl From<AssetError> for StdError {
     }
 }
 
-// #[cfg(test)]
-// pub mod test {
-//     use super::*;
-//     use crate::cosmwasm_std::testing::{message_info, mock_dependencies};
+#[cfg(test)]
+pub mod test {
+    use super::{cosmwasm_std::testing, *};
 
-//     #[test]
-//     fn test_single_coin() -> StdResult<()> {
-//         const ADMIN: &str = "cosmwasm105yqjjdgl00nzwyj9aua98zgetdn4qyhukjf5t";
-//         const AMOUNT: u128 = 100;
-//         const DENOM: &str = "cosm";
+    #[test]
+    fn test_single_coin() -> StdResult<()> {
+        const ADMIN: &str = "cosmwasm105yqjjdgl00nzwyj9aua98zgetdn4qyhukjf5t";
+        const AMOUNT: u128 = 100;
+        const DENOM: &str = "cosm";
 
-//         let deps = mock_dependencies();
-//         let info = message_info(&Addr::unchecked(ADMIN), &coins(AMOUNT, DENOM));
-//         let info_resp = Funds::single(None, None).check(&deps.api, &info)?;
+        #[cfg(feature = "cw-v1")]
+        let info = testing::mock_info(ADMIN, &coins(AMOUNT, DENOM));
 
-//         assert_eq!(
-//             info_resp,
-//             InfoResp {
-//                 sender: Addr::unchecked(ADMIN),
-//                 asset_amount: Uint128::new(AMOUNT),
-//                 asset_token: Token::new_native(DENOM),
-//             }
-//         );
+        #[cfg(feature = "cw-v2")]
+        let info = testing::message_info(&Addr::unchecked(ADMIN), &coins(AMOUNT, DENOM));
 
-//         Ok(())
-//     }
-// }
+        let deps = testing::mock_dependencies();
+        let info_resp = Funds::single(None, None).check(&deps.api, &info)?;
+
+        assert_eq!(
+            info_resp,
+            InfoResp {
+                sender: Addr::unchecked(ADMIN),
+                asset_amount: Uint128::new(AMOUNT),
+                asset_token: Token::new_native(DENOM),
+            }
+        );
+
+        Ok(())
+    }
+}

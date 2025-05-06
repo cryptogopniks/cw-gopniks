@@ -1,12 +1,18 @@
 #[cfg(all(not(feature = "cw-v1"), not(feature = "cw-v2")))]
-compile_error!("`cw-v1` or `cw-v2` feature is required");
-#[cfg(all(feature = "cw-v1", feature = "cw-v2"))]
-compile_error!("Features `cw-v1` and `cw-v2` are mutually exclusive. Enable only one");
+compile_error!("One of `cw-v1` or `cw-v2` must be enabled");
 
-#[cfg(all(feature = "cw-v1", not(feature = "cw-v2")))]
+#[cfg(all(feature = "cw-v1", feature = "cw-v2"))]
+compile_error!("Features `cw-v1` and `cw-v2` are mutually exclusive");
+
+#[cfg(feature = "cw-v1")]
 use cosmwasm_std_v1 as cosmwasm_std;
-#[cfg(all(feature = "cw-v2", not(feature = "cw-v1")))]
+#[cfg(feature = "cw-v2")]
 use cosmwasm_std_v2 as cosmwasm_std;
+
+#[cfg(feature = "cw-v1")]
+use cw20_v1 as cw20;
+#[cfg(feature = "cw-v2")]
+use cw20_v2 as cw20;
 
 mod utils;
 
