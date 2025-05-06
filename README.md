@@ -121,16 +121,6 @@ let (prefix, data) = Bech32Addr::split("cosmos1...")?;
 let address = Bech32Addr::join("osmo", &data);
 ```
 
-### - nft
-
-##### Description
-
-Helpers to work with cw721-base in CosmWasm contracts
-
-##### Functionality
-
-- Version agnostic min set of Execute msgs for cw721-base
-
 ### - encryption
 
 ##### Description
@@ -192,6 +182,16 @@ pub fn get_random_weight(
     Ok(Hash::from(hash_bytes).to_norm_dec())
 }
 ```
+
+### - nft
+
+##### Description
+
+Helpers to work with cw721-base in CosmWasm contracts
+
+##### Functionality
+
+- Version agnostic min set of Execute msgs for cw721-base
 
 ## Licenses
 

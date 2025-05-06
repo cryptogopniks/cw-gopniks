@@ -1,3 +1,6 @@
+use crate::cosmwasm_std;
+use crate::cw20;
+
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
     coin, coins, wasm_execute, Addr, Api, BankMsg, Coin, CosmosMsg, MessageInfo, StdError,
@@ -319,8 +322,7 @@ impl From<AssetError> for StdError {
 
 #[cfg(test)]
 pub mod test {
-    use super::*;
-    use cosmwasm_std::testing::{message_info, mock_dependencies};
+    use super::{cosmwasm_std::testing, *};
 
     #[test]
     fn test_single_coin() -> StdResult<()> {
@@ -328,8 +330,13 @@ pub mod test {
         const AMOUNT: u128 = 100;
         const DENOM: &str = "cosm";
 
-        let deps = mock_dependencies();
-        let info = message_info(&Addr::unchecked(ADMIN), &coins(AMOUNT, DENOM));
+        #[cfg(feature = "cw-v1")]
+        let info = testing::mock_info(ADMIN, &coins(AMOUNT, DENOM));
+
+        #[cfg(feature = "cw-v2")]
+        let info = testing::message_info(&Addr::unchecked(ADMIN), &coins(AMOUNT, DENOM));
+
+        let deps = testing::mock_dependencies();
         let info_resp = Funds::single(None, None).check(&deps.api, &info)?;
 
         assert_eq!(

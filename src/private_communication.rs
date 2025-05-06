@@ -1,5 +1,7 @@
+use crate::cosmwasm_std;
+
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{from_hex, to_hex, Decimal, Env, StdError, StdResult, Timestamp};
+use cosmwasm_std::{Decimal, Env, StdError, StdResult, Timestamp};
 
 pub const ENC_KEY_LEN: usize = 32;
 
@@ -77,4 +79,36 @@ fn hash_bytes_to_norm_dec(hash: &[u8; ENC_KEY_LEN]) -> Decimal {
     }
 
     Decimal::from_ratio(hash_value, u128::MAX)
+}
+
+/// Decode a bag of bytes from hex into a vector of bytes
+fn from_hex<I>(input: I) -> StdResult<Vec<u8>>
+where
+    I: AsRef<[u8]>,
+{
+    #[cfg(feature = "cw-v1")]
+    {
+        hex::decode(input).map_err(StdError::invalid_hex)
+    }
+
+    #[cfg(feature = "cw-v2")]
+    {
+        cosmwasm_std::from_hex(input)
+    }
+}
+
+/// Encode a bag of bytes into the hex format
+fn to_hex<I>(input: I) -> String
+where
+    I: AsRef<[u8]>,
+{
+    #[cfg(feature = "cw-v1")]
+    {
+        hex::encode(input)
+    }
+
+    #[cfg(feature = "cw-v2")]
+    {
+        cosmwasm_std::to_hex(input)
+    }
 }
