@@ -10,6 +10,7 @@
     "auth-v2",
     "bech32",
     "nft",
-    "cw-v2"
+    "cw-v2",
+    "any"
   ]
 }
