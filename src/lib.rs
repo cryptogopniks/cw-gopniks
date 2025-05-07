@@ -27,6 +27,8 @@ use cw20_v2 as cw20;
 ))]
 mod private_communication;
 
+#[cfg(feature = "any")]
+pub mod any;
 #[cfg(any(feature = "assets-v1", feature = "assets-v2"))]
 pub mod assets;
 #[cfg(any(feature = "auth-v1", feature = "auth-v2"))]
