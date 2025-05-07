@@ -19,8 +19,6 @@ use cw20_v1 as cw20;
 #[cfg(all(feature = "assets-v2", feature = "cw-v2"))]
 use cw20_v2 as cw20;
 
-mod utils;
-
 #[cfg(any(
     feature = "encryption-v1",
     feature = "encryption-v2",
@@ -41,3 +39,5 @@ pub mod encryption;
 pub mod hashing;
 #[cfg(feature = "nft")]
 pub mod nft;
+
+pub mod utils;
