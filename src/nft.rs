@@ -2,12 +2,28 @@ use crate::cosmwasm_std;
 
 use cosmwasm_schema::{cw_serde, QueryResponses};
 use cosmwasm_std::{
-    wasm_execute, Addr, CosmosMsg, Deps, QuerierWrapper, StdError, StdResult, Timestamp,
+    to_json_binary, wasm_execute, Addr, Binary, CosmosMsg, Deps, Env, QuerierWrapper, StdError,
+    StdResult, Timestamp, WasmMsg,
 };
 
 use thiserror::Error;
 
 use crate::utils::convert_err;
+
+#[cw_serde]
+struct InstantiateMsg {
+    /// Name of the NFT contract
+    pub name: String,
+    /// Symbol of the NFT contract
+    pub symbol: String,
+
+    /// The minter is the only one who can create new NFTs.
+    /// This is designed for a base NFT that is controlled by an external program
+    /// or contract. You will likely replace this with custom logic in custom NFTs
+    pub minter: Option<String>,
+
+    pub withdraw_address: Option<String>,
+}
 
 #[cw_serde]
 enum ExecuteMsg {
@@ -189,7 +205,57 @@ pub fn check_tokens_holder(
     Ok(())
 }
 
-pub fn get_cw721_approve_all_msgs(
+pub fn get_inst_msg(
+    code_id: u64,
+    admin: impl ToString,
+    minter: impl ToString,
+    name: &str,
+    symbol: &str,
+    label: &str,
+) -> StdResult<CosmosMsg> {
+    Ok(CosmosMsg::Wasm(WasmMsg::Instantiate {
+        admin: Some(admin.to_string()),
+        code_id,
+        msg: get_cw721_inst_msg(minter, name, symbol)?,
+        funds: vec![],
+        label: label.to_string(),
+    }))
+}
+
+#[cfg(any(feature = "hashing-v1", feature = "hashing-v2"))]
+pub fn get_inst2_msg(
+    deps: Deps,
+    env: &Env,
+    code_id: u64,
+    admin: impl ToString,
+    minter: impl ToString,
+    name: &str,
+    symbol: &str,
+    label: &str,
+) -> StdResult<(Addr, CosmosMsg)> {
+    let (addr, salt) = crate::utils::get_instantiate_2_addr(deps, env, &label, code_id)?;
+    let msg = CosmosMsg::Wasm(WasmMsg::Instantiate2 {
+        admin: Some(admin.to_string()),
+        code_id,
+        label: label.to_string(),
+        msg: get_cw721_inst_msg(minter, name, symbol)?,
+        funds: vec![],
+        salt,
+    });
+
+    Ok((addr, msg))
+}
+
+fn get_cw721_inst_msg(minter: impl ToString, name: &str, symbol: &str) -> StdResult<Binary> {
+    to_json_binary(&InstantiateMsg {
+        name: name.to_string(),
+        symbol: symbol.to_string(),
+        minter: Some(minter.to_string()),
+        withdraw_address: None,
+    })
+}
+
+pub fn get_approve_all_msgs(
     querier: QuerierWrapper,
     collection_list: &[impl ToString],
     owner: impl ToString,
@@ -230,7 +296,7 @@ pub fn get_cw721_approve_all_msgs(
     Ok(msg_list)
 }
 
-pub fn get_cw721_transfer_msg(
+pub fn get_transfer_msg(
     collection: impl Into<String>,
     recipient: impl ToString,
     token_id: impl ToString,
@@ -246,7 +312,7 @@ pub fn get_cw721_transfer_msg(
     .map(CosmosMsg::Wasm)
 }
 
-pub fn get_cw721_mint_msg(
+pub fn get_mint_msg(
     collection: impl Into<String>,
     recipient: impl ToString,
     token_id: impl ToString,
@@ -263,7 +329,7 @@ pub fn get_cw721_mint_msg(
     .map(CosmosMsg::Wasm)
 }
 
-pub fn get_cw721_burn_msg(
+pub fn get_burn_msg(
     collection: impl Into<String>,
     token_id: impl ToString,
 ) -> StdResult<CosmosMsg> {
