@@ -32,7 +32,24 @@ fn get_coin_msgs(coin_list: &[Coin]) -> Vec<Anybuf> {
 }
 
 pub mod ibc {
+    use cosmwasm_schema::cw_serde;
+
     const PORT_DEFAULT: &str = "transfer";
+
+    #[cw_serde]
+    pub enum IbcMemo<M> {
+        Forward {
+            channel: String,
+            port: String,
+            receiver: String,
+            retries: u8,
+            timeout: u64,
+        },
+        Wasm {
+            contract: String,
+            msg: M,
+        },
+    }
 
     pub mod regular {
         use crate::{
@@ -86,9 +103,71 @@ pub mod ibc {
     pub mod neutron {
         use crate::{
             any::{get_any_msg, get_coin_msgs, ibc::PORT_DEFAULT},
-            cosmwasm_std::{coins, Addr, Coin, CosmosMsg, Uint128},
+            cosmwasm_std::{coins, Addr, Binary, Coin, CosmosMsg, Uint128},
         };
         use anybuf::Anybuf;
+        use cosmwasm_schema::cw_serde;
+
+        // https://github.com/neutron-org/neutron-sdk/blob/main/packages/neutron-sdk/src/sudo/msg.rs
+        #[cw_serde]
+        pub struct RequestPacket {
+            pub sequence: Option<u64>,
+            pub source_port: Option<String>,
+            pub source_channel: Option<String>,
+            pub destination_port: Option<String>,
+            pub destination_channel: Option<String>,
+            pub data: Option<Binary>,
+            pub timeout_height: Option<RequestPacketTimeoutHeight>,
+            pub timeout_timestamp: Option<u64>,
+        }
+
+        #[cw_serde]
+        pub struct RequestPacketTimeoutHeight {
+            pub revision_number: Option<u64>,
+            pub revision_height: Option<u64>,
+        }
+
+        /// Height is used for sudo call for `TxQueryResult` enum variant type
+        #[cw_serde]
+        pub struct Height {
+            /// the revision that the client is currently on
+            #[serde(default)]
+            pub revision_number: u64,
+            /// **height** is a height of remote chain
+            #[serde(default)]
+            pub revision_height: u64,
+        }
+
+        // https://github.com/neutron-org/neutron-sdk/blob/main/packages/neutron-sdk/src/sudo/msg.rs
+        #[cw_serde]
+        pub enum SudoMsg {
+            Response {
+                request: RequestPacket,
+                data: Binary,
+            },
+            Error {
+                request: RequestPacket,
+                details: String,
+            },
+            Timeout {
+                request: RequestPacket,
+            },
+            OpenAck {
+                port_id: String,
+                channel_id: String,
+                counterparty_channel_id: String,
+                counterparty_version: String,
+            },
+            TxQueryResult {
+                query_id: u64,
+                height: Height,
+                data: Binary,
+            },
+            #[serde(rename = "kv_query_result")]
+            KVQueryResult {
+                query_id: u64,
+            },
+        }
 
         #[allow(clippy::too_many_arguments)]
         pub fn get_transfer_msg(
