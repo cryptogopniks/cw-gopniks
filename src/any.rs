@@ -1,6 +1,6 @@
 use crate::cosmwasm_std;
 
-use cosmwasm_std::{coins, Addr, Binary, Coin, CosmosMsg, Uint128};
+use cosmwasm_std::{Binary, Coin, CosmosMsg};
 
 use anybuf::Anybuf;
 
@@ -32,12 +32,14 @@ fn get_coin_msgs(coin_list: &[Coin]) -> Vec<Anybuf> {
 }
 
 pub mod ibc {
-    use super::*;
-
     const PORT_DEFAULT: &str = "transfer";
 
     pub mod regular {
-        use super::*;
+        use crate::{
+            any::{get_any_msg, get_coin_msgs, ibc::PORT_DEFAULT},
+            cosmwasm_std::{coins, Addr, CosmosMsg, Uint128},
+        };
+        use anybuf::Anybuf;
 
         #[allow(clippy::too_many_arguments)]
         pub fn get_transfer_msg(
@@ -50,6 +52,7 @@ pub mod ibc {
             timeout_timestamp_ns: u64,
             ibc_transfer_memo: &str,
         ) -> CosmosMsg {
+            // https://github.com/osmosis-labs/osmosis/blob/main/cosmwasm/packages/registry/src/proto.rs#L32
             get_any_msg(
                 "/ibc.applications.transfer.v1.MsgTransfer",
                 Anybuf::new()
@@ -81,7 +84,11 @@ pub mod ibc {
     }
 
     pub mod neutron {
-        use super::*;
+        use crate::{
+            any::{get_any_msg, get_coin_msgs, ibc::PORT_DEFAULT},
+            cosmwasm_std::{coins, Addr, Coin, CosmosMsg, Uint128},
+        };
+        use anybuf::Anybuf;
 
         #[allow(clippy::too_many_arguments)]
         pub fn get_transfer_msg(
