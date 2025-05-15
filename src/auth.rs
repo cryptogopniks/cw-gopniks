@@ -19,8 +19,11 @@ pub struct TransferAdminState {
 }
 
 impl TransferAdminState {
-    pub fn get_new_admin(&self) -> Addr {
-        self.new_admin.to_owned()
+    pub fn new(new_admin: &Addr, deadline: u64) -> Self {
+        Self {
+            new_admin: new_admin.to_owned(),
+            deadline,
+        }
     }
 
     pub fn update_admin<Q: CustomQuery>(
@@ -69,6 +72,10 @@ impl TransferAdminState {
         })?;
 
         Ok(sender.to_owned())
+    }
+
+    pub fn get_new_admin(&self) -> Addr {
+        self.new_admin.to_owned()
     }
 }
 
