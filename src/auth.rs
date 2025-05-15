@@ -19,6 +19,10 @@ pub struct TransferAdminState {
 }
 
 impl TransferAdminState {
+    pub fn get_new_admin(&self) -> Addr {
+        self.new_admin.to_owned()
+    }
+
     pub fn update_admin<Q: CustomQuery>(
         deps: &mut DepsMut<Q>,
         env: &Env,

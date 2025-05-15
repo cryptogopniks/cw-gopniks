@@ -31,54 +31,54 @@ fn get_coin_msgs(coin_list: &[Coin]) -> Vec<Anybuf> {
         .collect()
 }
 
-fn get_output_msgs(list: &[(impl ToString, &[Coin])]) -> Vec<Anybuf> {
-    list.iter()
-        .map(|(address, amount)| {
-            Anybuf::new()
-                .append_string(1, address.to_string())
-                .append_repeated_message(2, &get_coin_msgs(amount))
-        })
-        .collect()
-}
+// fn get_output_msgs(list: &[(impl ToString, &[Coin])]) -> Vec<Anybuf> {
+//     list.iter()
+//         .map(|(address, amount)| {
+//             Anybuf::new()
+//                 .append_string(1, address.to_string())
+//                 .append_repeated_message(2, &get_coin_msgs(amount))
+//         })
+//         .collect()
+// }
 
-pub mod bank {
-    use crate::{
-        any::{get_any_msg, get_coin_msgs, get_output_msgs},
-        cosmwasm_std::{Coin, CosmosMsg},
-    };
-    use anybuf::Anybuf;
+// pub mod bank {
+//     use crate::{
+//         any::{get_any_msg, get_coin_msgs, get_output_msgs},
+//         cosmwasm_std::{Coin, CosmosMsg},
+//     };
+//     use anybuf::Anybuf;
 
-    pub fn get_msg_send_msg(from_address: &str, to_address: &str, amount: &[Coin]) -> CosmosMsg {
-        get_any_msg(
-            "/msg.send",
-            Anybuf::new()
-                // from_address
-                .append_string(1, from_address)
-                // to_address
-                .append_string(2, to_address)
-                // amount
-                .append_repeated_message(3, &get_coin_msgs(amount))
-                .into_vec()
-                .into(),
-        )
-    }
+//     pub fn get_msg_send_msg(from_address: &str, to_address: &str, amount: &[Coin]) -> CosmosMsg {
+//         get_any_msg(
+//             "/msg.send",
+//             Anybuf::new()
+//                 // from_address
+//                 .append_string(1, from_address)
+//                 // to_address
+//                 .append_string(2, to_address)
+//                 // amount
+//                 .append_repeated_message(3, &get_coin_msgs(amount))
+//                 .into_vec()
+//                 .into(),
+//         )
+//     }
 
-    pub fn get_msg_multi_send_msg(
-        input: (impl ToString, &[Coin]),
-        outputs: &[(impl ToString, &[Coin])],
-    ) -> CosmosMsg {
-        get_any_msg(
-            "/msg.multi.send",
-            Anybuf::new()
-                // inputs
-                .append_repeated_message(1, &get_output_msgs(&[input]))
-                // outputs
-                .append_repeated_message(2, &get_output_msgs(outputs))
-                .into_vec()
-                .into(),
-        )
-    }
-}
+//     pub fn get_msg_multi_send_msg(
+//         input: (impl ToString, &[Coin]),
+//         outputs: &[(impl ToString, &[Coin])],
+//     ) -> CosmosMsg {
+//         get_any_msg(
+//             "/msg.multi.send",
+//             Anybuf::new()
+//                 // inputs
+//                 .append_repeated_message(1, &get_output_msgs(&[input]))
+//                 // outputs
+//                 .append_repeated_message(2, &get_output_msgs(outputs))
+//                 .into_vec()
+//                 .into(),
+//         )
+//     }
+// }
 
 pub mod ibc {
     use cosmwasm_schema::cw_serde;
