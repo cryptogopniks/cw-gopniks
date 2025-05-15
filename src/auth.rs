@@ -77,6 +77,10 @@ impl TransferAdminState {
     pub fn get_new_admin(&self) -> Addr {
         self.new_admin.to_owned()
     }
+
+    pub fn get_deadline(&self) -> u64 {
+        self.deadline
+    }
 }
 
 #[cw_serde]
