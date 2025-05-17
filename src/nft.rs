@@ -163,7 +163,7 @@ pub enum Expiration {
 pub fn check_tokens_holder(
     deps: Deps,
     holder: &Addr,
-    collection_address: impl ToString,
+    collection: impl ToString,
     token_id_list: &[impl ToString],
 ) -> StdResult<()> {
     const MAX_LIMIT: u32 = 100;
@@ -177,14 +177,13 @@ pub fn check_tokens_holder(
     while (i == 0 || token_amount_sum == MAX_LIMIT) && i < ITER_LIMIT {
         i += 1;
 
-        let TokensResponse { tokens } = deps.querier.query_wasm_smart(
-            collection_address.to_string(),
-            &QueryMsg::Tokens {
-                owner: holder.to_string(),
-                start_after: last_token,
-                limit: Some(MAX_LIMIT),
-            },
-        )?;
+        let tokens = query_tokens(
+            deps.querier,
+            holder,
+            collection.to_string(),
+            last_token,
+            Some(MAX_LIMIT),
+        );
 
         for token in tokens.clone() {
             token_list.push(token);

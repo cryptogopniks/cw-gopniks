@@ -3,8 +3,8 @@ use crate::cw20;
 
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
-    coin, coins, wasm_execute, Addr, Api, BankMsg, Coin, CosmosMsg, MessageInfo, StdError,
-    StdResult, Uint128, WasmMsg,
+    coin, coins, wasm_execute, Addr, Api, BankMsg, Coin, CosmosMsg, MessageInfo, QuerierWrapper,
+    StdError, StdResult, Uint128, WasmMsg,
 };
 
 use thiserror::Error;
@@ -265,8 +265,32 @@ pub fn get_transfer_msg(recipient: &Addr, amount: Uint128, token: &Token) -> Std
     })
 }
 
+pub fn query_balance(
+    querier: QuerierWrapper,
+    account: impl ToString,
+    symbol: impl ToString,
+) -> Uint128 {
+    let account = account.to_string();
+    let symbol = &symbol.to_string();
+
+    let native_balance = querier
+        .query_balance(&account, symbol)
+        .map(|x| x.amount)
+        .unwrap_or_default();
+    let cw20_balance = querier
+        .query_wasm_smart::<cw20::BalanceResponse>(
+            symbol,
+            &cw20::Cw20QueryMsg::Balance {
+                address: account.clone(),
+            },
+        )
+        .map(|x| x.balance)
+        .unwrap_or_default();
+
+    std::cmp::max(native_balance, cw20_balance)
+}
+
 // TODO: we may not need entire cw20 crate for 2 msgs
-// TODO: add functions to query balances
 
 /// If exactly one coin was sent, returns it regardless of denom.
 /// Returns error if 0 or 2+ coins were sent
