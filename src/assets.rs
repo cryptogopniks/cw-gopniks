@@ -1,6 +1,6 @@
 use crate::cosmwasm_std;
 use crate::cw20;
-pub use cw20::{Cw20ReceiveMsg, EmbeddedLogo, Logo};
+pub use cw20::{BalanceResponse, Cw20QueryMsg, Cw20ReceiveMsg, EmbeddedLogo, Logo};
 
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
@@ -270,29 +270,52 @@ pub fn get_upload_logo_msg(cw20_symbol: impl Into<String>, logo: Logo) -> StdRes
     wasm_execute(cw20_symbol, &cw20::Cw20ExecuteMsg::UploadLogo(logo), vec![]).map(CosmosMsg::Wasm)
 }
 
+/// use `cw20_first: false` in most cases
 pub fn query_balance(
     querier: QuerierWrapper,
     account: impl ToString,
     symbol: impl ToString,
+    cw20_first: bool,
 ) -> Uint128 {
-    let account = account.to_string();
+    let account = &account.to_string();
     let symbol = &symbol.to_string();
 
-    let native_balance = querier
-        .query_balance(&account, symbol)
+    if cw20_first {
+        let cw20_balance = query_cw20_balance(querier, account, symbol);
+
+        if !cw20_balance.is_zero() {
+            return cw20_balance;
+        }
+
+        query_native_balance(querier, account, symbol)
+    } else {
+        let native_balance = query_native_balance(querier, account, symbol);
+
+        if !native_balance.is_zero() {
+            return native_balance;
+        }
+
+        query_cw20_balance(querier, account, symbol)
+    }
+}
+
+fn query_native_balance(querier: QuerierWrapper, account: &str, symbol: &str) -> Uint128 {
+    querier
+        .query_balance(account, symbol)
         .map(|x| x.amount)
-        .unwrap_or_default();
-    let cw20_balance = querier
-        .query_wasm_smart::<cw20::BalanceResponse>(
+        .unwrap_or_default()
+}
+
+fn query_cw20_balance(querier: QuerierWrapper, account: &str, symbol: &str) -> Uint128 {
+    querier
+        .query_wasm_smart::<BalanceResponse>(
             symbol,
-            &cw20::Cw20QueryMsg::Balance {
-                address: account.clone(),
+            &Cw20QueryMsg::Balance {
+                address: account.to_string(),
             },
         )
         .map(|x| x.balance)
-        .unwrap_or_default();
-
-    std::cmp::max(native_balance, cw20_balance)
+        .unwrap_or_default()
 }
 
 // TODO: we may not need entire cw20 crate for 2 msgs

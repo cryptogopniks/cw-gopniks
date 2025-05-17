@@ -36,6 +36,11 @@ pub fn deduplicate<T: Eq + Hash + Clone>(list: &[T]) -> Vec<T> {
         .collect()
 }
 
+// TODO: maybe move to nft or tests
+pub fn to_string_vec<T: ToString>(vec: &[T]) -> Vec<String> {
+    vec.iter().map(|x| x.to_string()).collect()
+}
+
 /// returns (address, salt)
 #[cfg(any(feature = "hashing-v1", feature = "hashing-v2"))]
 pub fn get_instantiate_2_addr(
