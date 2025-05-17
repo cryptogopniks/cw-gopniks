@@ -343,6 +343,26 @@ pub fn get_burn_msg(
     .map(CosmosMsg::Wasm)
 }
 
+pub fn query_tokens(
+    querier: QuerierWrapper,
+    owner: impl ToString,
+    collection: impl Into<String>,
+    start_after: Option<String>,
+    limit: Option<u32>,
+) -> Vec<String> {
+    querier
+        .query_wasm_smart::<TokensResponse>(
+            collection,
+            &QueryMsg::Tokens {
+                owner: owner.to_string(),
+                start_after,
+                limit,
+            },
+        )
+        .map(|x| x.tokens)
+        .unwrap_or_default()
+}
+
 #[derive(Error, Debug, PartialEq)]
 pub enum NftError {
     #[error("NFT isn't found!")]
