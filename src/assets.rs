@@ -1,6 +1,6 @@
 use crate::cosmwasm_std;
 use crate::cw20;
-pub use cw20::Cw20ReceiveMsg;
+pub use cw20::{Cw20ReceiveMsg, EmbeddedLogo, Logo};
 
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
@@ -264,6 +264,10 @@ pub fn get_transfer_msg(recipient: &Addr, amount: Uint128, token: &Token) -> Std
             vec![],
         )?),
     })
+}
+
+pub fn get_upload_logo_msg(cw20_symbol: impl Into<String>, logo: Logo) -> StdResult<CosmosMsg> {
+    wasm_execute(cw20_symbol, &cw20::Cw20ExecuteMsg::UploadLogo(logo), vec![]).map(CosmosMsg::Wasm)
 }
 
 pub fn query_balance(
