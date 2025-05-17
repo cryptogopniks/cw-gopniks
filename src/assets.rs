@@ -1,5 +1,6 @@
 use crate::cosmwasm_std;
 use crate::cw20;
+pub use cw20::Cw20ReceiveMsg;
 
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
